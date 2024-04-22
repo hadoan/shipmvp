@@ -1,0 +1,29 @@
+{
+    "name": "@shipmvp/app-store",
+    "private": true,
+    "sideEffects": false,
+    "version": "0.0.0",
+    "main": "./index.ts",
+    "files": [
+        "components.ts"
+    ],
+    "scripts": {
+        "type-check": "tsc --pretty --noEmit",
+        "type-check:ci": "tsc-absolute --pretty --noEmit",
+        "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
+        "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix",
+        "lint:report": "eslint . --format json --output-file ../../lint-results/app-store.json"
+    },
+    "dependencies": {
+        "@shipmvp/features": "*",
+        "@shipmvp/lib": "*",
+        "@shipmvp/trpc": "*",
+        "@shipmvp/ui": "*",
+        "lodash": "^4.17.21",
+        "qs-stringify": "^1.2.1",
+        "react-i18next": "^12.2.0"
+    },
+    "devDependencies": {
+        "@shipmvp/types": "*"
+    }
+}

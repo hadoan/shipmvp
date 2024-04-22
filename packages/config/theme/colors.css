@@ -1,0 +1,90 @@
+
+:root {
+  /* background */
+
+  --shipmvp-bg-emphasis: #E5E7EB;
+  --shipmvp-bg: white;
+  --shipmvp-bg-subtle: #F3F4F6;
+  --shipmvp-bg-muted: #F9FAFB;
+  --shipmvp-bg-inverted: #111827;
+
+  /* background -> components*/
+  --shipmvp-bg-info: #DEE9FC;
+  --shipmvp-bg-success: #E2FBE8;
+  --shipmvp-bg-attention: #FCEED8;
+  --shipmvp-bg-error: #F9E3E2;
+  --shipmvp-bg-dark-error: #752522;
+
+
+  /* Borders */
+  --shipmvp-border-emphasis:#9CA3AF;
+  --shipmvp-border: #D1D5DB;
+  --shipmvp-border-subtle:#E5E7EB;
+  --shipmvp-border-muted:#F3F4F6;
+  --shipmvp-border-error: #aa2e26;
+
+  /* Content/Text */
+  --shipmvp-text-emphasis: #111827;
+  --shipmvp-text:#374151;
+  --shipmvp-text-subtle:#6B7280;
+  --shipmvp-text-muted:#9CA3AF;
+  --shipmvp-text-inverted:white;
+
+  /* Content/Text -> components */
+  --shipmvp-text-info:#253985;
+  --shipmvp-text-success:#285231;
+  --shipmvp-text-attention:#73321B;
+  --shipmvp-text-error:#752522;
+
+  /* Brand shenanigans
+    -> These will be computed for the users theme at runtime.
+  */
+  --shipmvp-brand:#111827;
+  --shipmvp-brand-emphasis:#101010;
+}
+
+/* Darkmode Colors  -- TODO: WIP*/
+.dark {
+  /* background */
+
+  --shipmvp-bg-emphasis: #2b2b2b;
+  --shipmvp-bg: #111111;
+  --shipmvp-bg-subtle: #1c1c1c;
+  --shipmvp-bg-muted: #101010;
+  --shipmvp-bg-inverted: #f3f4f6;
+
+  /* background -> components*/
+  --shipmvp-bg-info: #DEE9FC;
+  --shipmvp-bg-success: #E2FBE8;
+  --shipmvp-bg-attention: #FCEED8;
+  --shipmvp-bg-error: #F9E3E2;
+  --shipmvp-bg-dark-error: #752522;
+
+
+  /* Borders */
+  --shipmvp-border-emphasis:#575757;
+  --shipmvp-border: #444444;
+  --shipmvp-border-subtle:#2b2b2b;
+  --shipmvp-border-muted:#1c1c1c;
+  --shipmvp-border-error: #aa2e26;
+
+  /* Content/Text */
+  --shipmvp-text-emphasis: #f3f4f6;
+  --shipmvp-text:#d6d6d6;
+  --shipmvp-text-subtle:#767676;
+  --shipmvp-text-muted:#575757;
+  --shipmvp-text-inverted:white;
+
+  /* Content/Text -> components */
+  --shipmvp-text-info:#253985;
+  --shipmvp-text-success:#285231;
+  --shipmvp-text-attention:#73321B;
+  --shipmvp-text-error:#752522;
+
+  /* Brand shenanigans
+    -> These will be computed for the users theme at runtime.
+  */
+  --shipmvp-brand:#111827;
+  --shipmvp-brand-emphasis:#101010;
+}
+

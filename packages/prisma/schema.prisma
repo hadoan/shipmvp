@@ -1,0 +1,305 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["views", "jsonProtocol"]
+}
+
+generator zod {
+  provider      = "zod-prisma"
+  output        = "./zod"
+  imports       = "./zod-utils"
+  relationModel = "default"
+}
+
+generator enums {
+  provider = "ts-node --transpile-only ./enum-generator"
+}
+
+model Credential {
+  id      Int      @id @default(autoincrement())
+  // @@type is deprecated
+  type    String
+  key     Json
+  user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int?
+  app     App?     @relation(fields: [appId], references: [slug], onDelete: Cascade)
+  // How to make it a required column?
+  appId   String?
+  invalid Boolean? @default(false)
+
+  @@index([userId])
+  @@index([appId])
+}
+
+enum IdentityProvider {
+  TEK
+  GOOGLE
+  SAML
+}
+
+enum UserPermissionRole {
+  USER
+  ADMIN
+}
+
+model User {
+  id                   Int                @id @default(autoincrement())
+  username             String?
+  name                 String?
+  /// @zod.email()
+  email                String
+  emailVerified        DateTime?
+  password             String?
+  bio                  String?
+  avatar               String?
+  timeZone             String             @default("Europe/London")
+  weekStart            String             @default("Sunday")
+  startTime            Int                @default(0)
+  endTime              Int                @default(1440)
+  bufferTime           Int                @default(0)
+  hideBranding         Boolean            @default(false)
+  theme                String?
+  createdDate          DateTime           @default(now()) @map(name: "created")
+  trialEndsAt          DateTime?
+  credentials          Credential[]
+  teams                Membership[]
+  defaultScheduleId    Int?
+  completedOnboarding  Boolean            @default(false)
+  locale               String?
+  timeFormat           Int?               @default(12)
+  twoFactorSecret      String?
+  twoFactorEnabled     Boolean            @default(false)
+  identityProvider     IdentityProvider   @default(TEK)
+  identityProviderId   String?
+  invitedTo            Int?
+  brandColor           String             @default("#292929")
+  darkBrandColor       String             @default("#fafafa")
+  // the location where the events will end up
+  // participate in dynamic group booking or not
+  /// @zod.custom(imports.userMetadata)
+  metadata             Json?
+  verified             Boolean?           @default(false)
+  role                 UserPermissionRole @default(USER)
+  disableImpersonation Boolean            @default(false)
+  impersonatedUsers    Impersonations[]   @relation("impersonated_user")
+  impersonatedBy       Impersonations[]   @relation("impersonated_by_user")
+  apiKeys              ApiKey[]
+  accounts             Account[]
+  sessions             Session[]
+  Feedback             Feedback[]
+  verifiedNumbers      VerifiedNumber[]
+  organizationId       Int?
+  organization         Team?              @relation("scope", fields: [organizationId], references: [id], onDelete: SetNull)
+
+  @@unique([email])
+  @@unique([email, username])
+  @@unique([username, organizationId])
+  @@index([emailVerified])
+  @@index([identityProvider])
+  @@index([identityProviderId])
+  @@map(name: "users")
+}
+
+model Team {
+  id                  Int                @id @default(autoincrement())
+  /// @zod.min(1)
+  name                String
+  /// @zod.min(1)
+  slug                String?
+  logo                String?
+  appLogo             String?
+  appIconLogo         String?
+  bio                 String?
+  hideBranding        Boolean            @default(false)
+  hideBookATeamMember Boolean            @default(false)
+  members             Membership[]
+  createdAt           DateTime           @default(now())
+  /// @zod.custom(imports.teamMetadataSchema)
+  metadata            Json?
+  theme               String?
+  brandColor          String             @default("#292929")
+  darkBrandColor      String             @default("#fafafa")
+  verifiedNumbers     VerifiedNumber[]
+  parentId            Int?
+  parent              Team?              @relation("organization", fields: [parentId], references: [id], onDelete: Cascade)
+  children            Team[]             @relation("organization")
+  orgUsers            User[]             @relation("scope")
+  inviteToken         VerificationToken?
+  timeFormat          Int?
+  timeZone            String             @default("Europe/London")
+  weekStart           String             @default("Sunday")
+
+  @@unique([slug, parentId])
+}
+
+enum MembershipRole {
+  MEMBER
+  ADMIN
+  OWNER
+}
+
+model Membership {
+  id                   Int            @id @default(autoincrement())
+  teamId               Int
+  userId               Int
+  accepted             Boolean        @default(false)
+  role                 MembershipRole
+  team                 Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user                 User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  disableImpersonation Boolean        @default(false)
+
+  @@unique([userId, teamId])
+  @@index([teamId])
+  @@index([userId])
+}
+
+model VerificationToken {
+  id            Int      @id @default(autoincrement())
+  identifier    String
+  token         String   @unique
+  expires       DateTime
+  expiresInDays Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  teamId        Int?     @unique
+  team          Team?    @relation(fields: [teamId], references: [id])
+
+  @@unique([identifier, token])
+  @@index([token])
+}
+
+model ResetPasswordRequest {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String
+  expires   DateTime
+}
+
+model Impersonations {
+  id                 Int      @id @default(autoincrement())
+  createdAt          DateTime @default(now())
+  impersonatedUser   User     @relation("impersonated_user", fields: [impersonatedUserId], references: [id], onDelete: Cascade)
+  impersonatedBy     User     @relation("impersonated_by_user", fields: [impersonatedById], references: [id], onDelete: Cascade)
+  impersonatedUserId Int
+  impersonatedById   Int
+}
+
+model ApiKey {
+  id         String    @id @unique @default(cuid())
+  userId     Int
+  note       String?
+  createdAt  DateTime  @default(now())
+  expiresAt  DateTime?
+  lastUsedAt DateTime?
+  hashedKey  String    @unique()
+  user       User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  app        App?      @relation(fields: [appId], references: [slug], onDelete: Cascade)
+  appId      String?
+
+  @@index([userId])
+}
+
+model HashedLink {
+  id   Int    @id @default(autoincrement())
+  link String @unique()
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            Int
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@index([type])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       Int
+  expires      DateTime
+  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+enum AppCategories {
+  calendar
+  messaging
+  other
+  payment
+  video // deprecated, please use 'conferencing' instead
+  web3 // deprecated, we should no longer have any web3 apps
+  automation
+  analytics
+  conferencing
+  crm
+}
+
+model App {
+  // The slug for the app store public page inside `/apps/[slug]`
+  slug        String          @id @unique
+  // The directory name for `/packages/app-store/[dirName]`
+  dirName     String          @unique
+  // Needed API Keys
+  keys        Json?
+  // One or multiple categories to which this app belongs
+  categories  AppCategories[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  credentials Credential[]
+  ApiKey      ApiKey[]
+  enabled     Boolean         @default(false)
+
+  @@index([enabled])
+}
+
+model Feedback {
+  id      Int      @id @default(autoincrement())
+  date    DateTime @default(now())
+  userId  Int
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating  String
+  comment String?
+
+  @@index([userId])
+  @@index([rating])
+}
+
+enum TimeUnit {
+  DAY    @map("day")
+  HOUR   @map("hour")
+  MINUTE @map("minute")
+}
+
+model VerifiedNumber {
+  id          Int    @id @default(autoincrement())
+  userId      Int?
+  user        User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teamId      Int?
+  team        Team?  @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  phoneNumber String
+
+  @@index([userId])
+  @@index([teamId])
+}

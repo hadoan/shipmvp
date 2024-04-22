@@ -1,0 +1,199 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "pipeline": {
+    "@shipmvp/prisma#build": {
+      "cache": false,
+      "dependsOn": ["post-install"]
+    },
+    "@shipmvp/prisma#db-migrate": {
+      "cache": false,
+      "dependsOn": ["@shipmvp/prisma#db-up"],
+      "inputs": ["./schema.prisma", "./migrations/**/*.sql"]
+    },
+    "@shipmvp/prisma#db-seed": {
+      "cache": false,
+      "dependsOn": ["@shipmvp/prisma#db-migrate"]
+    },
+    "@shipmvp/prisma#db-up": {
+      "cache": false
+    },
+    "@shipmvp/prisma#dx": {
+      "cache": false,
+      "dependsOn": ["@shipmvp/prisma#db-migrate"]
+    },
+    "@shipmvp/web#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**"],
+      "env": [
+        "NEXT_PUBLIC_IS_E2E",
+        "NEXT_PUBLIC_STRIPE_PREMIUM_PLAN_PRICE_MONTHLY",
+        "NEXT_PUBLIC_STRIPE_PREMIUM_PLAN_PRODUCT_ID",
+        "NEXT_PUBLIC_STRIPE_PUBLIC_KEY",
+        "NEXT_PUBLIC_STRIPE_TEAM_MONTHLY_PRICE_ID",
+        "NEXT_PUBLIC_WEBAPP_URL",
+        "NEXT_PUBLIC_WEBSITE_URL",
+        "STRIPE_PREMIUM_PLAN_PRODUCT_ID",
+        "STRIPE_TEAM_MONTHLY_PRICE_ID",
+        "STRIPE_ORG_MONTHLY_PRICE_ID"
+      ]
+    },
+    "@shipmvp/web#dx": {
+      "cache": false,
+      "dependsOn": ["@shipmvp/prisma#dx"]
+    },
+    "@shipmvp/web#start": {
+      "cache": false,
+      "dependsOn": []
+    },
+    "@shipmvp/website#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**"],
+      "env": [
+        "CSP_POLICY",
+        "DATOCMS_API_TOKEN",
+        "DATOCMS_GRAPHQL_ENDPOINT",
+        "ENVIRONMENT_URL",
+        "NEXT_PUBLIC_IS_PREMIUM_NEW_PLAN",
+        "NEXT_PUBLIC_STRIPE_FREE_PLAN_PRICE",
+        "NEXT_PUBLIC_STRIPE_PREMIUM_NEW_PLAN_PRICE",
+        "NEXT_PUBLIC_STRIPE_PREMIUM_PLAN_PRICE",
+        "NEXT_PUBLIC_STRIPE_PRO_PLAN_PRICE",
+        "NEXT_PUBLIC_STRIPE_PUBLIC_KEY",
+        "NEXT_PUBLIC_WEBAPP_URL",
+        "NEXT_PUBLIC_WEBSITE_URL",
+        "SENDGRID_VERIFICATION_KEY",
+        "STRIPE_FREE_PLAN_PRODUCT_ID",
+        "STRIPE_PREMIUM_PLAN_PRODUCT_ID",
+        "STRIPE_PRO_PLAN_PRODUCT_ID",
+        "STRIPE_SUPPORT_TABLE",
+        "MOTIFLAND_REST_ENDPOINT",
+        "MOTIFLAND_DOCS_API_KEY",
+        "MOTIFLAND_DOCS_PROJECT_ID"
+      ]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**"]
+    },
+    "db-deploy": {
+      "cache": false,
+      "inputs": ["./migrations/**/*.sql", "./prisma/migrations/**/*.sql"]
+    },
+    "db-seed": {},
+    "deploy": {
+      "cache": false,
+      "dependsOn": ["@shipmvp/web#build"]
+    },
+    "clean": {
+      "cache": false,
+      "outputs": ["dist/**", "build/**"]
+    },
+    "dev": {
+      "dependsOn": ["//#env-check:common", "//#env-check:app-store"],
+      "cache": false
+    },
+    "dx": {
+      "cache": false
+    },
+    "lint": {
+      "cache": false
+    },
+    "lint:fix": {
+      "cache": false
+    },
+    "lint:report": {
+      "cache": false,
+      "outputs": ["lint-results"]
+    },
+    "post-install": {
+      "dependsOn": [],
+      "outputs": ["../../node_modules/@prisma/client/**", "../../node_modules/@prisma/admin-client/**"],
+      "inputs": ["./schema.prisma", "./prisma/schema.prisma"],
+      "env": ["PRISMA_GENERATE_DATAPROXY"]
+    },
+    "@shipmvp/prisma#post-install": {
+      "cache": false,
+      "outputs": ["dist/**", "build/**"]
+    },
+    "start": {
+      "outputs": ["dist/**", "build/**"]
+    },
+    "embed-tests": {
+      "cache": false,
+      "outputs": ["dist/**", "build/**"]
+    },
+    "embed-tests-quick": {
+      "cache": false,
+      "outputs": ["dist/**", "build/**"]
+    },
+    "type-check": {
+      "cache": false
+    },
+    "type-check:ci": {
+      "cache": false
+    },
+    "@shipmvp/prisma#db-reset": {
+      "cache": false,
+      "outputs": ["dist/**", "build/**"]
+    },
+    "@shipmvp/app-store-cli#build": {
+      "cache": false,
+      "inputs": ["../../app-store/**/**"],
+      "outputs": ["../../app-store/apps.server.generated.ts", "../../app-store/apps.browser.generated.tsx"]
+    },
+    "@shipmvp/embed-react#type-check": {
+      "dependsOn": ["@shipmvp/embed-core#build", "@shipmvp/embed-snippet#build"],
+      "outputs": ["dist/**", "build/**"]
+    },
+    "@shipmvp/embed-core#build": {
+      "cache": false,
+      "outputs": ["../../../apps/web/public/embed/**"]
+    },
+    "embed-tests-update-snapshots:ci": {
+      "cache": false,
+      "dependsOn": [
+        "@shipmvp/prisma#db-seed",
+        "@shipmvp/web#build",
+        "^build",
+        "^embed-tests-update-snapshots:ci"
+      ],
+      "outputs": ["dist/**", "build/**"]
+    },
+    "//#env-check:common": {
+      "cache": false,
+      "inputs": ["./.env.example", "./.env"],
+      "outputs": ["./.env"]
+    },
+    "//#env-check:app-store": {
+      "cache": false,
+      "inputs": ["./.env.appStore.example", "./.env.appStore"],
+      "outputs": ["./.env.appStore"]
+    },
+    "//#test": {
+      "cache": false
+    }
+  },
+  "globalDependencies": ["yarn.lock"],
+  "globalEnv": [
+    "NEXT_PUBLIC_STRIPE_PRO_PLAN_PRICE",
+    "NEXT_PUBLIC_STRIPE_PREMIUM_PLAN_PRICE",
+    "NEXT_PUBLIC_IS_PREMIUM_NEW_PLAN",
+    "NEXT_PUBLIC_STRIPE_PREMIUM_NEW_PLAN_PRICE",
+    "STRIPE_TEAM_MONTHLY_PRICE_ID",
+    "STRIPE_ORG_MONTHLY_PRICE_ID",
+    "STRIPE_WEBHOOK_SECRET",
+    "STRIPE_PRIVATE_KEY",
+    "STRIPE_CLIENT_ID",
+    "PAYMENT_FEE_FIXED",
+    "PAYMENT_FEE_PERCENTAGE",
+    "EMAIL_FROM",
+    "EMAIL_SERVER_HOST",
+    "EMAIL_SERVER_PORT",
+    "SENDGRID_SYNC_API_KEY",
+    "NEXT_PUBLIC_APP_NAME",
+    "NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS",
+    "NEXT_PUBLIC_COMPANY_NAME",
+    "NEXT_PUBLIC_DISABLE_SIGNUP",
+    "GOOGLE_API_CREDENTIALS"
+  ]
+}

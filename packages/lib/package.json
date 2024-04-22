@@ -1,0 +1,37 @@
+{
+  "name": "@shipmvp/lib",
+  "private": true,
+  "sideEffects": false,
+  "version": "0.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint . --ext .ts,.js,.tsx,.jsx",
+    "lint:fix": "eslint . --ext .ts,.js,.tsx,.jsx --fix",
+    "lint:report": "eslint . --format json --output-file ../../lint-results/app-store.json"
+  },
+  "dependencies": {
+    "@sendgrid/client": "^7.7.0",
+    "@shipmvp/config": "*",
+    "@vercel/og": "^0.5.0",
+    "bcryptjs": "^2.4.3",
+    "i18next": "^23.2.3",
+    "ical.js": "^1.4.0",
+    "ics": "^2.37.0",
+    "jimp": "^0.16.1",
+    "next-i18next": "^13.2.2",
+    "react-hot-toast": "^2.3.0",
+    "rrule": "^2.7.1",
+    "tailwind-merge": "^1.8.1",
+    "tsdav": "2.0.3",
+    "tslog": "^3.2.1",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^7.3.0",
+    "@shipmvp/tsconfig": "*",
+    "@shipmvp/types": "*",
+    "typescript": "^4.9.4"
+  }
+}

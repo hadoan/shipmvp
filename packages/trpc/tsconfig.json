@@ -1,0 +1,4 @@
+{
+  "extends": "@shipmvp/tsconfig/react-library.json",
+  "include": ["client", "next", "react", "server"]
+}
