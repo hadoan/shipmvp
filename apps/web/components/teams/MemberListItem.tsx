@@ -21,11 +21,10 @@ import {
   DropdownItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
   showToast,
 } from "@shipmvp/ui";
-import { MoreHorizontal, Edit2, Lock, UserX } from "@shipmvp/ui/components/icon";
+import { MoreHorizontal, Edit2, UserX } from "@shipmvp/ui/components/icon";
 
 import MemberChangeRoleModal from "./MemberChangeRoleModal";
 // import TeamAvailabilityModal from "./TeamAvailabilityModal";
@@ -146,19 +145,6 @@ export default function MemberListItem(props: Props) {
                         {t("edit")}
                       </DropdownItem>
                     </DropdownMenuItem>
-                    {impersonationMode && (
-                      <>
-                        <DropdownMenuItem>
-                          <DropdownItem
-                            type="button"
-                            onClick={() => setShowImpersonateModal(true)}
-                            StartIcon={Lock}>
-                            {t("impersonate")}
-                          </DropdownItem>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                      </>
-                    )}
                     <DropdownMenuItem>
                       <DropdownItem
                         type="button"

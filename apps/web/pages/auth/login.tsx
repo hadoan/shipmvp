@@ -287,9 +287,6 @@ const _getServerSideProps = async function getServerSideProps(context: GetServer
       csrfToken,
       trpcState: ssr.dehydrate(),
       isGoogleLoginEnabled: IS_GOOGLE_LOGIN_ENABLED,
-      // isSAMLLoginEnabled: false,
-      // samlTenantID: '',
-      // samlProductID: '',
       totpEmail,
     },
   };
