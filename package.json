@@ -5,7 +5,6 @@
   "workspaces": [
     "apps/*",
     "packages/*",
-    "packages/embeds/*",
     "packages/features/*",
     "packages/app-store/*"
   ],
@@ -16,12 +15,9 @@
     "db-seed": "turbo run db-seed",
     "db-studio": "yarn prisma studio",
     "deploy": "turbo run deploy",
-    "dev:all": "turbo run dev --scope=\"@shipmvp/web\" --scope=\"@shipmvp/website\" --scope=\"@shipmvp/console\"",
+    "dev:all": "turbo run dev --scope=\"@shipmvp/web\" --scope=\"@shipmvp/website\"",
     "dev:api": "turbo run dev --scope=\"@shipmvp/web\" --scope=\"@shipmvp/api\"",
-    "dev:api:console": "turbo run dev --scope=\"@shipmvp/web\" --scope=\"@shipmvp/api\" --scope=\"@shipmvp/console\"",
-    "dev:console": "turbo run dev --scope=\"@shipmvp/web\" --scope=\"@shipmvp/console\"",
-    "dev:swagger": "turbo run dev --scope=\"@shipmvp/api\" --scope=\"@shipmvp/swagger\"",
-    "dev:website": "turbo run dev --scope=\"@shipmvp/web\" --scope=\"@shipmvp/website\"",
+    "dev:api:console": "turbo run dev --scope=\"@shipmvp/web\" --scope=\"@shipmvp/api\" ",
     "dev": "turbo run dev --scope=\"@shipmvp/web\"",
     "build-storybook": "turbo run build --scope=\"@shipmvp/storybook\"",
     "dx": "turbo run dx",
