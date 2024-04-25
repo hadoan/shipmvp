@@ -14,7 +14,6 @@ function getCspPolicy(nonce: string) {
   // Maybe see how @next-safe/middleware does it if it's supported.
   const useNonStrictPolicy = CSP_POLICY === "non-strict";
 
-  // We add WEBAPP_URL to img-src because of booking pages, which end up loading images from app.shipmvp.co on shipmvp.co
   return `
 	  default-src 'self' ${IS_PRODUCTION ? "" : "data:"};
 	  script-src ${

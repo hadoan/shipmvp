@@ -1,6 +1,5 @@
 const glob = require("glob");
 
-/** Needed to rewrite public booking page, gets all static pages but [user] */
 const pages = glob
   .sync("pages/**/[^_]*.{tsx,js,ts}", { cwd: __dirname })
   .map((filename) =>

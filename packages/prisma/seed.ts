@@ -32,7 +32,7 @@ async function createUser(opts: {
   });
 
   console.log(
-    `👤 Upserted '${opts.user.username}' with email "${opts.user.email}" & password "${opts.user.password}". Booking page 👉 ${process.env.NEXT_PUBLIC_WEBAPP_URL}/${opts.user.username}`
+    `👤 Upserted '${opts.user.username}' with email "${opts.user.email}" & password "${opts.user.password}".`
   );
 
   return user;
