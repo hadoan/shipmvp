@@ -337,7 +337,6 @@ function UserDropdown({ small }: UserDropdownProps) {
       </DropdownMenuTrigger>
 
       <DropdownMenuPortal>
-        {/* <FreshChatProvider> */}
         <DropdownMenuContent
           align="start"
           onInteractOutside={() => {
@@ -403,7 +402,6 @@ function UserDropdown({ small }: UserDropdownProps) {
           </>
           )
         </DropdownMenuContent>
-        {/* </FreshChatProvider> */}
       </DropdownMenuPortal>
     </Dropdown>
   );
