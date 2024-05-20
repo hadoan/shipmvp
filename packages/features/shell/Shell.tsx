@@ -429,7 +429,7 @@ export type NavigationItemType = {
   }) => boolean;
 };
 
-const requiredCredentialNavigationItems = ["Routing Forms"];
+const requiredCredentialNavigationItems: string[] = [];
 const MORE_SEPARATOR_NAME = "more";
 
 const navigation: NavigationItemType[] = [
@@ -553,17 +553,6 @@ const Navigation = () => {
 };
 
 function useShouldDisplayNavigationItem(item: NavigationItemType) {
-  const { status } = useSession();
-  // const { data: routingForms } = trpc.viewer.appById.useQuery(
-  //   { appId: "routing-forms" },
-  //   {
-  //     enabled: status === "authenticated" && requiredCredentialNavigationItems.includes(item.name),
-  //     trpc: {},
-  //   }
-  // );
-  // const flags = useFlagMap();
-  // if (isKeyInObject(item.name, flags)) return flags[item.name];
-  // return !requiredCredentialNavigationItems.includes(item.name) || routingForms?.isInstalled;
   return !requiredCredentialNavigationItems.includes(item.name);
 }
 
@@ -587,6 +576,37 @@ const NavigationItem: React.FC<{
 
   return (
     <Fragment>
+      <Tooltip side="right" content={t(item.name)} className="lg:hidden">
+        <Link
+          href={item.href}
+          aria-label={t(item.name)}
+          className={classNames(
+            "text-default group flex items-center rounded-md px-2 py-1.5 text-sm font-medium [&[aria-current='page']]:bg-slate-100",
+            isChild
+              ? `[&[aria-current='page']]:text-emphasis hidden h-8 pl-16 lg:flex lg:pl-11 [&[aria-current='page']]:bg-transparent ${
+                  props.index === 0 ? "mt-0" : "mt-px"
+                }`
+              : "[&[aria-current='page']]:text-awst mt-0.5 text-sm",
+            isLocaleReady ? "hover:text-awst hover:bg-slate-100" : ""
+          )}
+          aria-current={current ? "page" : undefined}>
+          {item.icon && (
+            <item.icon
+              className="mr-2 h-4 w-4 flex-shrink-0 ltr:mr-2 rtl:ml-2 [&[aria-current='page']]:text-inherit"
+              aria-hidden="true"
+              aria-current={current ? "page" : undefined}
+            />
+          )}
+          {isLocaleReady ? (
+            <span className="block w-full justify-between sm:hidden lg:flex">
+              <div className="flex">{t(item.name)}</div>
+              {item.badge && item.badge}
+            </span>
+          ) : (
+            <SkeletonText style={{ width: `${item.name.length * 10}px` }} className="h-[20px]" />
+          )}
+        </Link>
+      </Tooltip>
       {item.child &&
         isCurrent({ router, isChild, item }) &&
         item.child.map((item, index) => <NavigationItem index={index} key={item.name} item={item} isChild />)}
