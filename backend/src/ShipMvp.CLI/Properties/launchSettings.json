@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ShipMvp.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "run-sql \"SELECT * FROM Integrations\""
+    }
+  }
+}

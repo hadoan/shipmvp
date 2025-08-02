@@ -1,0 +1,6 @@
+# Ignore all bin and obj folders in the repository
+**/bin/
+**/obj/
+
+backend/.vs/
+backend/.vs

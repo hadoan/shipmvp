@@ -1,0 +1,155 @@
+/* ABP-inspired Swagger UI Custom Styles */
+
+/* Header styling */
+.topbar {
+    background-color: #007bff;
+    border-bottom: 3px solid #0056b3;
+}
+
+.topbar .download-url-wrapper {
+    display: none;
+}
+
+/* Logo area */
+.topbar .topbar-wrapper {
+    padding: 10px 20px;
+}
+
+.topbar .topbar-wrapper .link {
+    content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="32" height="32"><path d="M12 2L2 7v10c0 5.55 3.84 10 9 11 1.09-.21 2-.63 2.71-1.06C16.91 26.37 20 21.55 20 17V7l-8-5z"/></svg>');
+    height: 32px;
+    width: 32px;
+}
+
+/* Info section */
+.info {
+    margin: 30px 0;
+}
+
+.info .title {
+    color: #007bff;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.info .description {
+    color: #6c757d;
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+/* Operation styling */
+.opblock.opblock-get {
+    border-color: #28a745;
+    background: rgba(40, 167, 69, 0.1);
+}
+
+.opblock.opblock-post {
+    border-color: #007bff;
+    background: rgba(0, 123, 255, 0.1);
+}
+
+.opblock.opblock-put {
+    border-color: #ffc107;
+    background: rgba(255, 193, 7, 0.1);
+}
+
+.opblock.opblock-delete {
+    border-color: #dc3545;
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.opblock.opblock-patch {
+    border-color: #6f42c1;
+    background: rgba(111, 66, 193, 0.1);
+}
+
+/* Button improvements */
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.15s ease-in-out;
+}
+
+.btn.execute {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn.execute:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+/* Response section */
+.responses-inner h4 {
+    color: #007bff;
+    font-weight: 600;
+}
+
+.response-content-type {
+    font-family: 'Courier New', monospace;
+    background-color: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+}
+
+/* Schema styling */
+.model-box {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+}
+
+.model-title {
+    background-color: #e9ecef;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+    color: #495057;
+}
+
+/* Try it out section */
+.try-out {
+    background-color: #e7f3ff;
+    border: 1px solid #b3d7ff;
+    border-radius: 6px;
+    padding: 15px;
+    margin: 10px 0;
+}
+
+/* Parameter table improvements */
+.parameters tbody tr {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.parameters tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Code highlighting */
+.highlight-code {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+}
+
+/* Custom branding */
+.swagger-ui .info .title small {
+    background-color: #007bff;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+/* Footer styling */
+.swagger-ui .scheme-container {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 15px;
+    margin-top: 20px;
+}
