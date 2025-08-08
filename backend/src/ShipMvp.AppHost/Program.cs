@@ -2,14 +2,28 @@ using Aspire.Hosting;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
-// Add PostgreSQL database with specific password configuration
-var postgresPassword = builder.AddParameter("postgres-password", value: "AspirePassword123!", secret: true);
+// Check if external PostgreSQL is available, otherwise use Aspire-managed PostgreSQL
+var useExternalPostgres = builder.Configuration.GetValue<bool>("UseExternalPostgres", false);
 
-var postgres = builder.AddPostgres("postgres", password: postgresPassword)
-    .WithDataVolume()
-    .WithPgAdmin();
+IResourceBuilder<PostgresDatabaseResource> database;
 
-var database = postgres.AddDatabase("shipmvp");
+if (useExternalPostgres)
+{
+    // Use external PostgreSQL (running in Docker or elsewhere)
+    var connectionString = builder.Configuration.GetConnectionString("PostgreSQL")
+        ?? "Host=localhost;Port=5432;Database=shipmvp;Username=postgres;Password=ShipMVPPass123!";
+    var externalPostgres = builder.AddConnectionString("postgres", connectionString);
+    database = builder.AddDatabase("shipmvp", externalPostgres);
+}
+else
+{
+    // Use Aspire-managed PostgreSQL
+    var postgresPassword = builder.AddParameter("postgres-password", value: "ShipMVPPass123!", secret: true);
+    var postgres = builder.AddPostgres("postgres", password: postgresPassword)
+        .WithDataVolume()
+        .WithPgAdmin();
+    database = postgres.AddDatabase("shipmvp");
+}
 
 // Add the API project with database reference
 var api = builder.AddProject<Projects.ShipMvp_Api>("shipmvp-api")

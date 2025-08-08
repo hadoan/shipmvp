@@ -78,6 +78,79 @@ npm run dev
 
 - App: <http://localhost:5173>
 
+## PostgreSQL Database Setup
+
+### Option 1: Standalone PostgreSQL (Recommended for Development)
+
+For development work or when you want to run PostgreSQL independently of Aspire:
+
+```bash
+# Start PostgreSQL container (matches Aspire configuration)
+docker run --name shipmvp-postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=ShipMVPPass123! \
+  -e POSTGRES_DB=shipmvp \
+  -e PGDATA=/var/lib/postgresql/data/pgdata \
+  -p 5432:5432 \
+  -v shipmvp-postgres-data:/var/lib/postgresql/data \
+  --restart unless-stopped \
+  -d postgres:latest
+```
+
+**Database Management:**
+
+```bash
+# Check container status
+docker ps | grep postgres
+
+# Stop PostgreSQL
+docker stop shipmvp-postgres
+
+# Start PostgreSQL (after stopping)
+docker start shipmvp-postgres
+
+# Remove PostgreSQL (WARNING: This deletes all data)
+docker rm -f shipmvp-postgres
+docker volume rm shipmvp-postgres-data
+```
+
+**Connect to PostgreSQL:**
+
+```bash
+# Using psql (if installed locally)
+psql -h localhost -U postgres -d shipmvp
+
+# Using Docker exec
+docker exec -it shipmvp-postgres psql -U postgres -d shipmvp
+```
+
+**Run Migrations:**
+
+With the standalone PostgreSQL running, you can create and apply migrations:
+
+```bash
+cd backend/src/ShipMvp.Application
+
+# Create a new migration
+dotnet ef migrations add YourMigrationName --startup-project ../ShipMvp.Api
+
+# Apply migrations to database
+dotnet ef database update --startup-project ../ShipMvp.Api
+```
+
+### Option 2: Aspire-Managed PostgreSQL
+
+When using the full Aspire orchestration (`dotnet run` in `ShipMvp.AppHost`), PostgreSQL is automatically managed and configured. The Aspire setup can automatically detect and use the standalone PostgreSQL if it's already running.
+
+**Connection Details:**
+
+- **Host**: localhost
+- **Port**: 5432
+- **Database**: shipmvp
+- **Username**: postgres
+- **Password**: ShipMVPPass123!
+- **Connection String**: `Host=localhost;Port=5432;Database=shipmvp;Username=postgres;Password=ShipMVPPass123!`
+
 ## Key Features
 
 ### .NET Aspire Orchestration
@@ -151,6 +224,41 @@ docker system prune -f
 - Check Aspire Dashboard for service status
 - Verify PostgreSQL container is running and ready
 - Check connection string injection in API logs
+
+**PostgreSQL Issues:**
+
+```bash
+# Check if PostgreSQL is running
+docker ps | grep postgres
+
+# View PostgreSQL logs
+docker logs shipmvp-postgres
+
+# Restart PostgreSQL container
+docker restart shipmvp-postgres
+
+# Connect to PostgreSQL for debugging
+docker exec -it shipmvp-postgres psql -U postgres -d shipmvp
+
+# Reset PostgreSQL (WARNING: Deletes all data)
+docker stop shipmvp-postgres
+docker rm shipmvp-postgres
+docker volume rm shipmvp-postgres-data
+# Then run the docker run command again
+```
+
+**Migration Issues:**
+
+```bash
+# If migrations fail, check database connection
+dotnet ef migrations list --startup-project ../ShipMvp.Api
+
+# Remove last migration (if needed)
+dotnet ef migrations remove --startup-project ../ShipMvp.Api
+
+# Reset database to specific migration
+dotnet ef database update MigrationName --startup-project ../ShipMvp.Api
+```
 
 ### Development Tips
 
