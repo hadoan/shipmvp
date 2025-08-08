@@ -19,7 +19,7 @@ if (useExternalPostgres)
         .WithEnvironment("ConnectionStrings__DefaultConnection", connectionString);
 
     // Add frontend Vite React app
-    var frontend = builder.AddNpmApp("shipmvp-frontend", "../../../frontend")
+    var frontend = builder.AddNpmApp("shipmvp-frontend", "../../../frontend", "dev:aspire")
         .WithReference(api)
         .WithHttpEndpoint(port: 8080, env: "PORT")
         .WithExternalHttpEndpoints()
@@ -42,7 +42,7 @@ else
         .WithEnvironment("ASPNETCORE_ENVIRONMENT", "Development");
 
     // Add frontend Vite React app
-    var frontend = builder.AddNpmApp("shipmvp-frontend", "../../../frontend")
+    var frontend = builder.AddNpmApp("shipmvp-frontend", "../../../frontend", "dev:aspire")
         .WithReference(api)
         .WithHttpEndpoint(port: 8080, env: "PORT")
         .WithExternalHttpEndpoints()
