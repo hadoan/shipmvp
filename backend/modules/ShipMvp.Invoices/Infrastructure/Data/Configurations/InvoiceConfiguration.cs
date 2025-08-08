@@ -11,7 +11,7 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
         builder.ToTable("Invoices");
 
         builder.HasKey(x => x.Id);
-        
+
         builder.Property(x => x.Id)
             .IsRequired()
             .ValueGeneratedNever(); // We generate GUIDs in domain
@@ -35,7 +35,7 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
             money.Property(m => m.Amount)
                 .HasColumnName("Amount")
                 .IsRequired();
-            
+
             money.Property(m => m.Currency)
                 .HasColumnName("Currency")
                 .IsRequired()
@@ -58,21 +58,13 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
                 money.Property(m => m.Amount)
                     .HasColumnName("ItemAmount")
                     .IsRequired();
-                
+
                 money.Property(m => m.Currency)
                     .HasColumnName("ItemCurrency")
                     .IsRequired()
                     .HasMaxLength(3);
             });
         });
-
-        // Configure extra properties as JSON
-        builder.Property("ExtraProperties")
-            .HasColumnName("ExtraProperties")
-            .HasColumnType("jsonb");
-        
-        // Ignore any navigation properties for ExtraProperties
-        builder.Ignore("ExtraProperties");
 
         // Indexes
         builder.HasIndex(x => x.CustomerName)
@@ -84,4 +76,4 @@ public class InvoiceConfiguration : IEntityTypeConfiguration<Invoice>
         builder.HasIndex(x => x.CreatedAt)
             .HasDatabaseName("IX_Invoices_CreatedAt");
     }
-} 
+}

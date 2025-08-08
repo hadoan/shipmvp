@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using ShipMvp.Core;
 using ShipMvp.Core.Entities;
 
@@ -29,8 +31,8 @@ public class File : Entity<Guid>
     /// </summary>
     public string MimeType { get; set; } = string.Empty;
 
-    public string ContentType { get; set;} = string.Empty;
-    public string FilePath { get; set;} = string.Empty;
+    public string ContentType { get; set; } = string.Empty;
+    public string FilePath { get; set; } = string.Empty;
     public decimal FileSize { get; set; } = 0;
 
     /// <summary>

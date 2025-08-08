@@ -43,30 +43,47 @@ public class ApplicationModule : IModule
 
         // Register application services by convention
         services.AddServicesByConvention(typeof(ApplicationModule).Assembly);
-        
+
         // Security services
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IEncryptionService, DataProtectionEncryptionService>();
         services.AddHttpContextAccessor();
         services.AddScoped<ShipMvp.Core.Security.ICurrentUser, ShipMvp.Core.Security.CurrentUser>();
 
-        // Database - Use PostgreSQL for development and production
+        // Database configuration
         services.AddDbContext<AppDbContext>(options =>
         {
-            Console.WriteLine($"[DEBUG] Environment Name: {environment.EnvironmentName}");
-            Console.WriteLine($"[DEBUG] Is Development: {environment.IsDevelopment()}");
-            Console.WriteLine($"[DEBUG] Is Production: {environment.IsProduction()}");
-            
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+
             if (environment.IsDevelopment())
             {
                 Console.WriteLine("[DEBUG] Using PostgreSQL database");
-                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection") ?? "Host=soloroute.postgres.database.azure.com;Port=5432;Database=soloreach1;Username=soloroute;Password=Zs9inppKDm3@eRf");
+                Console.WriteLine($"[DEBUG] Connection string: {(string.IsNullOrEmpty(connectionString) ? "NULL" : connectionString.Substring(0, Math.Min(50, connectionString.Length)))}...");
+
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    Console.WriteLine("[WARNING] No connection string found - using InMemory database as fallback");
+                    options.UseInMemoryDatabase("ShipMvpDb");
+                }
+                else
+                {
+                    options.UseNpgsql(connectionString, npgsqlOptions =>
+                    {
+                        npgsqlOptions.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(30), errorCodesToAdd: null);
+                    });
+                }
             }
             else
             {
-                Console.WriteLine("[DEBUG] Using InMemory database");
-                // Use InMemory for testing/demo, but in production you'd use the real PostgreSQL database
-                options.UseInMemoryDatabase("ShipMvpDb");
+                Console.WriteLine("[DEBUG] Using Production PostgreSQL database");
+                if (string.IsNullOrEmpty(connectionString))
+                {
+                    throw new InvalidOperationException("DefaultConnection string is required in production environment");
+                }
+                options.UseNpgsql(connectionString, npgsqlOptions =>
+                {
+                    npgsqlOptions.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(30), errorCodesToAdd: null);
+                });
             }
         });
 
@@ -144,7 +161,7 @@ public class ApplicationModule : IModule
         using var scope = app.ApplicationServices.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         context.Database.EnsureCreated();
-       
+
         // Seed initial data
         DataSeeder.SeedAsync(context).GetAwaiter().GetResult();
     }

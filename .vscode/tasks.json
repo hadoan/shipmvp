@@ -14,6 +14,17 @@
         "isDefault": true
       },
       "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build-apphost",
+      "command": "dotnet",
+      "type": "shell",
+      "args": [
+        "build",
+        "${workspaceFolder}/backend/src/ShipMvp.AppHost/ShipMvp.AppHost.csproj"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
     }
   ]
 }

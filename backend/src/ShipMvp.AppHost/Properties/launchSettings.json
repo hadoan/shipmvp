@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "ShipMvp.AppHost": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPIRE_ALLOW_UNSECURED_TRANSPORT": "true",
+        "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "http://localhost:18889",
+        "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "http://localhost:20888"
+      },
+      "applicationUrl": "https://localhost:17152;http://localhost:15152"
+    }
+  }
+}

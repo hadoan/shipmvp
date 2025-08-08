@@ -25,7 +25,7 @@ public class AppDbContext : DbContext, IDbContext
     public DbSet<Integration> Integrations { get; set; }
     public DbSet<IntegrationCredential> IntegrationCredentials { get; set; }
 
-  
+
     // Files
     public DbSet<Domain.Files.File> Files { get; set; }
 
@@ -75,11 +75,8 @@ public class AppDbContext : DbContext, IDbContext
             entity.Property(x => x.FilePath).IsRequired().HasMaxLength(500);
             entity.Property(x => x.FileSize).IsRequired();
             entity.HasIndex(x => x.CreatedAt);
-            
-            // Configure ExtraProperties as JSON
-            entity.Property("ExtraProperties")
-                .HasColumnName("ExtraProperties")
-                .HasColumnType("jsonb");
+
+
         });
 
         modelBuilder.Entity<UserSubscription>(entity =>
@@ -110,14 +107,14 @@ public class AppDbContext : DbContext, IDbContext
             entity.Property(x => x.IsActive).IsRequired();
             entity.Property(x => x.StripeProductId).HasMaxLength(255);
             entity.Property(x => x.StripePriceId).HasMaxLength(255);
-            
+
             // Configure Money value object
             entity.OwnsOne(x => x.Price, money =>
             {
                 money.Property(m => m.Amount).HasColumnName("PriceAmount");
                 money.Property(m => m.Currency).HasColumnName("PriceCurrency").HasMaxLength(3);
             });
-            
+
             // Configure PlanFeatures value object
             entity.OwnsOne(x => x.Features, features =>
             {
@@ -127,7 +124,7 @@ public class AppDbContext : DbContext, IDbContext
                 features.Property(f => f.CustomBranding).HasColumnName("CustomBranding");
                 features.Property(f => f.ApiAccess).HasColumnName("ApiAccess");
             });
-            
+
             entity.HasIndex(x => x.CreatedAt);
         });
 
@@ -152,7 +149,5 @@ public class AppDbContext : DbContext, IDbContext
             modelBuilder.ApplyConfigurationsFromAssembly(assembly);
         }
 
-        // Automatically map ExtraProperties JSON column for every entity
-        modelBuilder.MapExtraPropertiesAsJson();
     }
 }

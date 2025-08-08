@@ -1,6 +1,7 @@
 using ShipMvp.Api;
 using ShipMvp.Application;
 using ShipMvp.Invoices;
+using ShipMvp.Api.Host;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -8,7 +9,10 @@ using System.Text;
 using ShipMvp.Core.Modules;
 using Npgsql;
 
+// Configure JSON.NET for Npgsql (legacy - consider migrating to System.Text.Json)
+#pragma warning disable CS0618 // Type or member is obsolete
 NpgsqlConnection.GlobalTypeMapper.UseJsonNet();
+#pragma warning restore CS0618 // Type or member is obsolete
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,7 +42,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidAudience = builder.Configuration["Jwt:Audience"],
             ValidateLifetime = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT Key is required"))),
             ValidateIssuerSigningKey = true,
             NameClaimType = System.Security.Claims.ClaimTypes.Name,
             RoleClaimType = System.Security.Claims.ClaimTypes.Role,
@@ -53,31 +57,31 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
                 logger.LogError("JWT Authentication failed: {Exception}", context.Exception);
                 logger.LogError("JWT Authentication failure reason: {Failure}", context.Exception.Message);
-                
+
                 // Log the JWT configuration for debugging
                 var configuration = context.HttpContext.RequestServices.GetRequiredService<IConfiguration>();
-                logger.LogError("JWT Config - Issuer: {Issuer}, Audience: {Audience}, KeyLength: {KeyLength}", 
-                    configuration["Jwt:Issuer"], 
-                    configuration["Jwt:Audience"], 
+                logger.LogError("JWT Config - Issuer: {Issuer}, Audience: {Audience}, KeyLength: {KeyLength}",
+                    configuration["Jwt:Issuer"],
+                    configuration["Jwt:Audience"],
                     configuration["Jwt:Key"]?.Length ?? 0);
-                
+
                 return Task.CompletedTask;
             },
             OnTokenValidated = context =>
             {
                 var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-                logger.LogInformation("JWT Token validated successfully for user: {UserName}", 
+                logger.LogInformation("JWT Token validated successfully for user: {UserName}",
                     context.Principal?.Identity?.Name);
                 logger.LogInformation("JWT Token claims count: {ClaimsCount}", context.Principal?.Claims.Count() ?? 0);
                 logger.LogInformation("JWT Identity.IsAuthenticated: {IsAuthenticated}", context.Principal?.Identity?.IsAuthenticated);
                 logger.LogInformation("JWT Identity.AuthenticationType: {AuthenticationType}", context.Principal?.Identity?.AuthenticationType);
-                
+
                 // Log all claims for debugging
                 foreach (var claim in context.Principal?.Claims ?? Array.Empty<System.Security.Claims.Claim>())
                 {
                     logger.LogInformation("JWT Claim: {Type} = {Value}", claim.Type, claim.Value);
                 }
-                
+
                 return Task.CompletedTask;
             },
             OnChallenge = context =>
@@ -92,40 +96,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 var app = builder.Build();
 
 // IMPORTANT: Apply CORS first, before any other middleware
-app.UseCors(builder =>
+app.UseCors(corsBuilder =>
 {
     var configuration = app.Services.GetRequiredService<IConfiguration>();
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    
-    // Get CORS origins from configuration
-    var corsOrigins = configuration["App:CorsOrigins"];
-    var allowedOrigins = new List<string>();
-    
-    if (!string.IsNullOrWhiteSpace(corsOrigins))
-    {
-        allowedOrigins = corsOrigins
-            .Split(',', StringSplitOptions.RemoveEmptyEntries)
-            .Select(o => o.Trim())
-            .Where(o => !string.IsNullOrWhiteSpace(o))
-            .Distinct()
-            .ToList();
-    }
-    
-    // Add default development origins if none configured
-    if (!allowedOrigins.Any())
-    {
-        allowedOrigins = new List<string>
-        {
-            "http://localhost:3000",
-            "http://localhost:5173", 
-            "http://localhost:8080",
-            "http://localhost:8081"
-        };
-    }
-    
-    logger.LogInformation("CORS: Configuring allowed origins: {Origins}", string.Join(", ", allowedOrigins));
-    
-    builder
+
+    // Use the centralized CORS configuration
+    var allowedOrigins = CorsConfiguration.GetAllowedOrigins(configuration, logger);
+
+    CorsConfiguration.LogConfiguration(allowedOrigins, logger);
+
+    corsBuilder
         .WithOrigins(allowedOrigins.ToArray())
         .AllowAnyMethod()
         .AllowAnyHeader()
@@ -141,11 +122,11 @@ app.Use(async (context, next) =>
     logger.LogInformation("=== REQUEST STARTED ===");
     logger.LogInformation("Request Path: {Path}", context.Request.Path);
     logger.LogInformation("Request Method: {Method}", context.Request.Method);
-    logger.LogInformation("Authorization Header: {AuthHeader}", 
+    logger.LogInformation("Authorization Header: {AuthHeader}",
         context.Request.Headers["Authorization"].FirstOrDefault()?.Substring(0, Math.Min(50, context.Request.Headers["Authorization"].FirstOrDefault()?.Length ?? 0)) + "...");
-    
+
     await next();
-    
+
     logger.LogInformation("=== REQUEST COMPLETED ===");
 });
 
@@ -158,5 +139,7 @@ app.ConfigureModules(app.Environment);
 
 app.Run();
 
-// Make Program class accessible for testing
+/// <summary>
+/// Main program class for the ShipMvp API application.
+/// </summary>
 public partial class Program { }

@@ -22,6 +22,26 @@
       "sourceFileMap": {
         "/Views": "${workspaceFolder}/Views"
       }
+    },
+    {
+      "name": ".NET Launch Aspire AppHost",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build-apphost",
+      "program": "${workspaceFolder}/backend/src/ShipMvp.AppHost/bin/Debug/net9.0/ShipMvp.AppHost.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/backend/src/ShipMvp.AppHost",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "Now listening on: (https?://\\S+)"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPIRE_ALLOW_UNSECURED_TRANSPORT": "true",
+        "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "http://localhost:18889",
+        "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "http://localhost:20888"
+      }
     }
   ]
 }
