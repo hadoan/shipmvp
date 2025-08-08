@@ -13,8 +13,8 @@ using ShipMvp.Application.Infrastructure.Data;
 namespace ShipMvp.Application.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250808212152_Init")]
-    partial class Init
+    [Migration("20250808214740_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
