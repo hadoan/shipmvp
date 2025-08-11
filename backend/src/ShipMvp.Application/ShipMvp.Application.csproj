@@ -9,7 +9,15 @@
     <ProjectReference Include="../ShipMvp.Domain/ShipMvp.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Google.Cloud.PubSub.V1" Version="3.13.0" />
+		<PackageReference Include="Google.Cloud.Storage.V1" Version="4.4.0" />
+		<PackageReference Include="Grpc.Auth" Version="2.71.0" />
+		<PackageReference Include="Grpc.Core" Version="2.46.6" />
+	</ItemGroup>
+
+
+	<ItemGroup>
     <PackageReference Include="Castle.Core" Version="5.2.1" />
     <PackageReference Include="Castle.Core.AsyncInterceptor" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="9.0.7" />

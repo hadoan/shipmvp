@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "description": "Generate Excel formulas for financial models",
+  "execution_settings": {
+    "gpt-4o": {
+      "model_id": "gpt-4o",
+      "service_id": "gpt-4o",
+      "temperature": 0.1,
+      "text_format": "json",
+      "store": true
+    }
+  },
+  "input_variables": [
+    {
+      "name": "rowIdx",
+      "description": "Row index",
+      "required": true
+    },
+    {
+      "name": "colIdx",
+      "description": "Column index",
+      "required": true
+    },
+    {
+      "name": "rowHeader",
+      "description": "Row header text",
+      "required": true
+    },
+    {
+      "name": "rowType",
+      "description": "Type of row (revenue, expense, etc.)",
+      "required": true
+    },
+    {
+      "name": "colType",
+      "description": "Type of column (historical, forecast, etc.)",
+      "required": true
+    },
+    {
+      "name": "rowHeaders",
+      "description": "All row headers",
+      "required": true
+    },
+    {
+      "name": "colHeaders",
+      "description": "All column headers",
+      "required": true
+    },
+    {
+      "name": "values",
+      "description": "Values matrix",
+      "required": true
+    },
+    {
+      "name": "formulas",
+      "description": "Formulas matrix",
+      "required": true
+    }
+  ]
+}
