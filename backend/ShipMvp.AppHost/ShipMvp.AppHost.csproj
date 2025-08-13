@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../ShipMvp.Api/ShipMvp.Api.csproj" />
+    <ProjectReference Include="..\ShipMvp\ShipMvp.Api\ShipMvp.Api.csproj" />
   </ItemGroup>
 
 </Project>

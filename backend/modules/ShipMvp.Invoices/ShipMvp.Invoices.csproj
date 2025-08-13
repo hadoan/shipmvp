@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ShipMvp.Core\ShipMvp.Core.csproj" />
+    <ProjectReference Include="..\..\ShipMvp\ShipMvp.Core\ShipMvp.Core.csproj" />
   </ItemGroup>
 
 </Project> 
